@@ -1,200 +1,121 @@
-# Config in ArchLinux 
+## Arch Linux 的一些配置问题
 
-## 电源管理
+### 电源管理
 
-`/etc/systemd/logind.conf`
+- 文件路径： `/etc/systemd/logind.conf`
 
-## Language
+### 输入法问题
 
-### 解决qt界面无法输入中文
+- qt界面无法输入中文 (ibus)
+    - `qtconfig-qt4`
+        Interface -> Default Input Method -> iBus
 
-$ `qtconfig-qt4`
+    - 在 ~/.xprofile 添加
+        ```shell
+        export GTK_IM_MODULE=ibus
+        export XMODIFIERS=@im=ibus
+        export QT_IM_MODULE=ibus
+        ```
 
-> Interface -> Default Input Method -> iBus
+    - 修改i3config 添加(修改) `exec --no-startup-id ibus-daemon --xim -d`
 
-~~在 zshrc, xinitrc 添加~~
+### 声音问题
 
-```shell
-export GTK_IM_MODULE=ibus
-export XMODIFIERS=@im=ibus
-export QT_IM_MODULE=ibus
-```
+- `pacman -S alsamixer pulsmixer`
 
-修改i3config 添加(修改) `exec --no-startup-id ibus-daemon --xim -d`
+- 声卡配置 `vim $HOME/.asoundrc`
+    ```shell
+    defaults.ctl.card 1
+    defaults.pcm.card 1
+    defaults.timer.card 1
+    ```
 
-## Sound
+### VIM
 
-\#  `pacman -S alsamixer`
+- YouComplete
+    - `ln -s /usr/lib/libtinfo.so.6 /usr/lib/libtinfo.so.5`
 
-### 华硕笔记本电脑的声音问题
+### 包管理
 
-$ `vim $HOME/.asoundrc`
+- AUR: `vi /etc/pacman.d`
 
-```shell
-defaults.ctl.card 1
-defaults.pcm.card 1
-defaults.timer.card 1
-```
-
-## VIM
-
-### YouComplete
-
-\# `ln -s /usr/lib/libtinfo.so.6 /usr/lib/libtinfo.so.5`
-
-## Package Manager
-
-### AUR
-
-\# `vi /etc/pacman.d`
-
-```conf
-[archlinuxcn]
-SigLevel = Optional TrustAll
-Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
-```
+    ```conf
+    [archlinuxcn]
+    SigLevel = Optional TrustAll
+    Server = https://mirrors.tuna.tsinghua.edu.cn/archlinuxcn/$arch
+    ```
 
 
-### yaourt
 
-\# `pacman -S yaourt`
+### 触控板
 
-proxy
+- `pacman -S xf86-input-synaptics`
 
-\# `pacman -S privoxy`
+- 自然滚动
+    `synclient VertScrollDelta=-66`
 
-\# `vi /etc/privoxy/config`
+- 环形滚动
+    `synclient CircularScrolling=1`
 
-`rward-socks5 / 127.0.0.1:1080 .`
+- 指针速度
+    ```shell
+    synclient MaxSpeed=xxx
+    synclient MinSpeed=xxx
+    ```
 
-\# `systemctl start privoxy.service`
+- 单击, 双击, 中键
+    ```shell
+    synclient TapButton1=1
+    synclient TapButton2=3
+    synclient TapButton3=2
+    ```
 
-$ `export https_proxy=127.0.0.1:8118; export http_proxy=127.0.0.1:8118`
+### 网络问题
 
-## i3-gap
+- wifi-menu "No network found"
 
-参考[eoli3n 的dotfiles](https://github.com/eoli3n/dotfiles)
+    - `ip link set wlo1 up`
 
-## Application
+    - 如果出现
+        > RTNETLINK answers: Operation not possible due to RF-kill
+
+    - 则执行
+
+        `rfkill unblock wifi`
+
+
+### 蓝牙
+
+- install `bliez` and `bluez-utils`, load `btusb` and start `bluetooth.service`
+    ```shell
+    pacman -S bluez
+    pacman -S bluez-utils
+    modprobe btusb
+    systemctl start bluetooth.service
+    ```
+
 
 ### Mathematica
 
-打开mathematica时出错
+- 打开mathematica时出错
 
-> `/opt/Mathematica/SystemFiles/FrontEnd/Binaries/Linux-x86-64/Mathematica: symbol lookup error: /usr/lib/libfontconfig.so.1: undefined symbol: FT_Done_MM_Var`
-Solution: [Mathematica and freetype-2.9 undefined symbol](https://forums.gentoo.org/viewtopic-p-8198000.html?sid=ab27c1ca8e1927691858595185e18284)
-> I discovered the source of the problem. Mathematica includes its own freetype.so.6 library in the directory ${TopDirectory}/SystemFiles/Libraries/Linux-x86-64. This freetype library will call the system fontconfig which will give the error.
-> To fix this, just remove or rename the mathematica freetype.so.6 library. This will force Mathematica to use the system freetype library.
-> This solution will allow one to keep the latest freetype-2.9 and no downgrade will be necessary.
-> If Mathematica gives other errors on startup, like with libz.so, check if that library is installed in ${TopDirectory}/SystemFiles/Libraries/Linux-x86-64 and if so then remove or rename it.
-> I hope this helps.
+    > `/opt/Mathematica/SystemFiles/FrontEnd/Binaries/Linux-x86-64/Mathematica: symbol lookup error: /usr/lib/libfontconfig.so.1: undefined symbol: FT_Done_MM_Var`
+    - 解决方案
+        Solution: [Mathematica and freetype-2.9 undefined symbol](https://forums.gentoo.org/viewtopic-p-8198000.html?sid=ab27c1ca8e1927691858595185e18284)
 
-mathematica 自动在`$HOME`创建`Wolfram Mathematica`
-
-\# `pacman -S xdg-user-dirs`
-
-$ `xdg-user-dirs-update`
-
-## touchpad
-
-\# `pacman -S xf86-input-synaptics`
-
-自然滚动 `synclient VertScrollDelta=-66`
-
-环形滚动 `synclient CircularScrolling=1`
-
-指针速度
-
-```shell
-synclient MaxSpeed=xxx
-synclient MinSpeed=xxx
-```
-
-单击, 双击, 中键
-
-```shell
-synclient TapButton1=1
-synclient TapButton2=3
-synclient TapButton3=2
-```
-
-## Network
-
-### wifi-menu "No network found"
-
-\# `ip link set wlo1 up`
-
-if
-
-> RTNETLINK answers: Operation not possible due to RF-kill
-
-then 
-
-\# `rfkill unblock wifi`
+- mathematica 自动在`$HOME`创建`Wolfram Mathematica`
+    - `pacman -S xdg-user-dirs`
+    - `xdg-user-dirs-update`
 
 
-## Bluetooth
+### 其它的
 
-install `bliez` and `bluez-utils`, load `btusb` and start the `bluetooth.service`
+- `pacman -Syu` 时显示
 
-```shell
-pacman -S bluez
-pacman -S bluez-utils
-modprobe btusb
-systemctl start bluetooth.service
-```
+    > Possibly missing firmware for module: aic94xx
+    > Possibly missing firmware for module: wd719x
 
-use `bluetoothctl` to config it.
+- 解决方案
 
-this is an example below
-
-```
-power on
-scan on
-```
-
-以下为一个交互实例：
-
-\# `bluetoothctl` 
-> [NEW] Controller 00:10:20:30:40:50 pi [default]
-agent KeyboardOnly 
-> Agent registered
-default-agent 
-> Default agent request successful
-power on
-> Changing power on succeeded
-> [CHG] Controller 00:10:20:30:40:50 Powered: yes
-scan on
-> Discovery started
-> [CHG] Controller 00:10:20:30:40:50 Discovering: yes
-> [NEW] Device 00:12:34:56:78:90 myLino
-> [CHG] Device 00:12:34:56:78:90 LegacyPairing: yes
-pair 00:12:34:56:78:90
-> Attempting to pair with 00:12:34:56:78:90
-> [CHG] Device 00:12:34:56:78:90 Connected: yes
-> [CHG] Device 00:12:34:56:78:90 Connected: no
-> [CHG] Device 00:12:34:56:78:90 Connected: yes
-> Request PIN code
-> [agent] Enter PIN code: 1234
-> [CHG] Device 00:12:34:56:78:90 Paired: yes
-> Pairing successful
-> [CHG] Device 00:12:34:56:78:90 Connected: no
-connect 00:12:34:56:78:90
-> Attempting to connect to 00:12:34:56:78:90
-> [CHG] Device 00:12:34:56:78:90 Connected: yes
-> Connection successful
-
-
-## Others
-
-`pacman -Syu` shows
-
-```
-Possibly missing firmware for module: aic94xx
-Possibly missing firmware for module: wd719x
-```
-
-Solution
-
-https://gist.github.com/imrvelj/c65cd5ca7f5505a65e59204f5a3f7a6d
+    https://gist.github.com/imrvelj/c65cd5ca7f5505a65e59204f5a3f7a6d
 
