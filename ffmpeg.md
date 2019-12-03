@@ -3,11 +3,23 @@
 ### 图片
 
 - 图片缩放
+
   - 等比
 
     ```shell
     ffmpeg -i INPUT -vf "scale=1920:-1" OUTPUT
     ```
+
+    等比并适应到一定的长宽
+
+    ```shell
+    ffmpeg \
+      -i INPUT \
+      -vf "scale=1920:1080:force_original_aspect_ratio=increase,crop=1920:1080" \
+      -y OUTPUT
+
+    ```
+
   - 非等比
 
     ```shell
@@ -24,6 +36,6 @@
     -t 3 frames_%04d.png
   ```
 
-### 视频
-
 ### 音频
+
+### 视频
