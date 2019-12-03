@@ -4,5 +4,6 @@
 
 - [使用 ArchLinux 遇到的一些问题](./ArchLinux.md)
 - [Bash/Zsh 的奇技淫巧](./bash.md)
+- [FFmpeg 常用](./ffmpeg.md)
 - [~~科学上网~~](./VPS.md)
 
