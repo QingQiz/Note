@@ -38,4 +38,33 @@
 
 ### 音频
 
+- flac -> alac
+
+  ```shell
+  ffmpeg \
+    -i INPUT \
+    -acodec alac \
+    -vcodec copy \
+    OUTPUT
+  ```
+
 ### 视频
+
+- video -> image
+
+  ```shell
+  ffmpeg \
+    -i INPUT \
+    -vf fps=1/60,select='between(t,x,y)+between(t,x2,y2)' \
+    out%04d.png
+  ```
+
+- cut
+
+  ```shell
+  ffmpeg
+    -i INPUT \
+    -ss hh:mm:ss \
+    -to hh:mm:ss \
+    OUTPUT
+  ```
