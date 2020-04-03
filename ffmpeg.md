@@ -48,6 +48,21 @@
     OUTPUT
   ```
 
+- metadata
+  ```shell
+  ffmpeg \
+    -i "file:{sound}" \
+    -i "file:{img}" \
+    -map 0:0 -map 1:0 \
+    -id3v2_version 3 \
+    -metadata:s:v title="Album cover" \
+    -metadata:s:v comment="Cover (font)" \
+    -metadata key1="value1" \
+    -metadata key2="value2" \
+    -codec copy \
+    "file:{output}"
+  ```
+
 ### 视频
 
 - video -> image
