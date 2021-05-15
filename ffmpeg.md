@@ -62,6 +62,12 @@
     -codec copy \
     "file:{output}"
   ```
+  
+- 裁剪
+
+  ```shell
+  ffmpeg -i "input file" -c copy -ss time_start -to time_end "output file"
+  ```
 
 ### 视频
 
