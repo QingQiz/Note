@@ -47,6 +47,9 @@
     -vcodec copy \
     OUTPUT
   ```
+  ```shell
+  ls *.flac | xargs --replace=file bash -c "ffmpeg -i 'file' -c:a alac -c:v copy 'file.m4a'"
+  ```
 
 - metadata
   ```shell
