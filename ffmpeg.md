@@ -79,7 +79,7 @@
   ```shell
   ffmpeg \
     -i INPUT \
-    -vf fps=1/60,select='between(t,x,y)+between(t,x2,y2)' \
+    -vf fps=1/60,select='between(t,second_start_1, second_end_1)+between(t,second_start_2,second_end_2)' \
     out%04d.png
   ```
 
