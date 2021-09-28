@@ -72,6 +72,15 @@
   ffmpeg -i "input file" -c copy -ss time_start -to time_end "output file"
   ```
 
+- 音量
+
+  ```
+  ffmpeg -i input.wav -filter:a "volume=1.5" output.wav # 1.5 倍音量
+  ffmpeg -i input.wav -filter:a "volume=10dB" output.wav # 增加10dB
+  ```
+  
+  **NOTE** FFMPEG 只能调整音量，不能设置音量
+
 ### 视频
 
 - video -> image
